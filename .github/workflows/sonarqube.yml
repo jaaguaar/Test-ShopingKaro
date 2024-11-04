@@ -22,18 +22,22 @@ jobs:
         run: |
           docker build -t shopingkaro:latest .
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          scan-type: image
-          image-ref: 'docker.io/library/shopingkaro:latest'
-          format: template
-          template: '@${{ github.workspace }}/html.tpl'
-          output: trivy-report.html
-          exit-code: 0
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL,HIGH
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
+          trivy --version
+
+      - name: Run Trivy Vulnerability Scanner
+        run: |
+          trivy image \
+            --scanners vuln \
+            --ignore-unfixed \
+            --vuln-type os,library \
+            --severity CRITICAL,HIGH \
+            --format template \
+            --template "@${{ github.workspace }}/html.tpl" \
+            --output trivy-report.html \
+            docker.io/library/shopingkaro:latest
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
 
