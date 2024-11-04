@@ -27,6 +27,20 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
           trivy --version
 
+      # - name: Run Trivy Vulnerability Scanner
+      #   run: |
+      #     trivy image \
+      #       --scanners vuln \
+      #       --ignore-unfixed \
+      #       --vuln-type os,library \
+      #       --severity CRITICAL,HIGH \
+      #       --format template \
+      #       --template "@${{ github.workspace }}/html.tpl" \
+      #       --output trivy-report.html \
+      #       docker.io/library/shopingkaro:latest
+      #   env:
+      #     TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          
       - name: Run Trivy Vulnerability Scanner
         run: |
           trivy image \
@@ -34,23 +48,22 @@ jobs:
             --ignore-unfixed \
             --vuln-type os,library \
             --severity CRITICAL,HIGH \
-            --format template \
-            --template "@${{ github.workspace }}/html.tpl" \
-            --output trivy-report.html \
+            --format sarif \
+            --output trivy-report.sarif \
             docker.io/library/shopingkaro:latest
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
 
-      - name: Upload Trivy Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-report
-          path: trivy-report.html
+      # - name: Upload Trivy Report
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: trivy-report
+      #     path: trivy-report.html
           
-      # - uses: sonarsource/sonarqube-scan-action@v3
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - uses: sonarsource/sonarqube-scan-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
       # - uses: sonarsource/sonarqube-quality-gate-action@master
