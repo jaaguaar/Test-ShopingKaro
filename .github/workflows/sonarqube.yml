@@ -28,7 +28,7 @@ jobs:
           scan-type: image
           image-ref: 'docker.io/library/shopingkaro:latest'
           format: template
-          template: '@contrib/html.tpl'
+          template: '@html.tpl'
           output: trivy-report.html
           exit-code: 0
           ignore-unfixed: true
