@@ -25,6 +25,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
+          scan-type: image
           image-ref: 'docker.io/library/shopingkaro:latest'
           format: template
           template: '@contrib/html.tpl'
