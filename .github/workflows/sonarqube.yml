@@ -27,7 +27,7 @@ jobs:
         with:
           image-ref: shopingkaro:latest
           format: template
-          template: @contrib/html.tpl
+          template: '@contrib/html.tpl'
           output: trivy-report.html
           exit-code: 0
           ignore-unfixed: true
