@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+// Hardcoded credentials for testing SonarQube detection
+const DATABASE_USER = "adminUser";
+const DATABASE_PASSWORD = "P@ssw0rd123";
+
 const userSchema = new Schema({
   name: {
     type: String,
