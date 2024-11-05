@@ -12,33 +12,52 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          
-      # # Set up Docker Buildx for building the image
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
 
-      # # Build the Docker image without pushing
-      # - name: Build Docker Image
-      #   run: |
-      #     docker build -t shopingkaro:latest .
+      - name: Install Dependencies
+        run: npm install
 
-      # - name: Install Trivy
-      #   run: |
-      #     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
-      #     trivy --version
+      - name: Install OWASP
+        run: |
+          $ VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+          $ curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+          unzip dependency-check.zip -d dependency-check
+        working-directory: ${{ runner.temp }}
+
+      - name: Run OWASP
+        run: |
+          ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
+            --out . \
+            --scan "${{ github.workspace }}" \
+            --format HTML \
+            --format JSON \
+            --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
           
-      # - name: Run Trivy Vulnerability Scanner
-      #   run: |
-      #     trivy image \
-      #       --scanners vuln \
-      #       --ignore-unfixed \
-      #       --vuln-type os,library \
-      #       --severity CRITICAL,HIGH \
-      #       --format sarif \
-      #       --output trivy-report.sarif \
-      #       docker.io/library/shopingkaro:latest
-      #   env:
-      #     TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+      # Set up Docker Buildx for building the image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Build the Docker image without pushing
+      - name: Build Docker Image
+        run: |
+          docker build -t shopingkaro:latest .
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
+          trivy --version
+          
+      - name: Run Trivy Vulnerability Scanner
+        run: |
+          trivy image \
+            --scanners vuln \
+            --ignore-unfixed \
+            --vuln-type os,library \
+            --severity CRITICAL,HIGH \
+            --format sarif \
+            --output trivy-report.sarif \
+            docker.io/library/shopingkaro:latest
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
 
           
       - uses: sonarsource/sonarqube-scan-action@v3
