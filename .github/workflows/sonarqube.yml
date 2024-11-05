@@ -24,7 +24,7 @@ jobs:
       
       - name: Run OWASP
         run: |
-          "${{ runner.temp }}/dependency-check/bin/dependency-check.sh" --project "Test-ShopingKaro" \
+          /${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
             --out . \
             --scan "${{ github.workspace }}" \
             --format HTML \
