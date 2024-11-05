@@ -24,13 +24,16 @@ jobs:
       
       - name: Run OWASP
         run: |
-          /${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
-            --out . \
+          cd ${{ runner.temp }}/dependency-check/bin
+          ./dependency-check.sh --project "Test-ShopingKaro" \
+            --out ${{ github.workspace }} \
             --scan "${{ github.workspace }}" \
             --format HTML \
             --format JSON \
             --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
-
+            
+      - name: Run ls
+        run: ls -a
           
       # Set up Docker Buildx for building the image
       - name: Set up Docker Buildx
