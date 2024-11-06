@@ -20,13 +20,11 @@ jobs:
           sudo chown -R $USER:$USER /mnt/nvd_data
           sudo mkdir ${{ runner.temp }}/blobfusetmp
       - name: Mount Azure Blob Storage
+        env:
+          AZURE_STORAGE_AUTH_TYPE: Key
+          AZURE_STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          AZURE_STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_KEY }}
+          AZURE_STORAGE_ACCOUNT_CONTAINER: ${{ secrets.CONTAINER_NAME }}
         run: |
           sudo blobfuse2 mount /mnt/nvd_data \
             --tmp-path=${{ runner.temp }}/blobfusetmp \
-            --block-cache=true \
-            --block-cache-path=${{ runner.temp }}/blobfusetmp \
-            --account-name=${{ secrets.STORAGE_ACCOUNT_NAME }} \
-            --account-key=${{ secrets.STORAGE_ACCOUNT_KEY }} \
-            --container-name=${{ secrets.CONTAINER_NAME }} \
-            --block-cache-pool-size=2048 \
-            --block-cache-disk-size=5120
