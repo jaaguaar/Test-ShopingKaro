@@ -19,7 +19,9 @@ jobs:
           # sudo apt-get update
           # sudo apt-get install libfuse3-dev fuse3
       - name: Create NVD folder
-        run: sudo mkdir /mnt/nvd_data
+        run: |
+          sudo mkdir /mnt/nvd_data
+          sudo mkdir ${{ runner.temp }}/blobfusetmp
       - name: mount blob
         env:
           AZURE_STORAGE_AUTH_TYPE: Key
@@ -27,6 +29,6 @@ jobs:
           AZURE_STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_KEY }}
           AZURE_STORAGE_ACCOUNT_CONTAINER: ${{ secrets.CONTAINER_NAME }}
         run: |
-          sudo blobfuse2 mount /mnt/nvd_data
+          sudo blobfuse2 mount /mnt/nvd_data --tmp-path=${{ runner.temp }}/blobfusetmp
           cd /mnt/nvd_data
           ls -a
