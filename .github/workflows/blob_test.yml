@@ -19,7 +19,7 @@ jobs:
       - name: Create NVD folder
         run: |
           sudo mkdir /mnt/nvd_data
-          sudo chown -R $USER:$USER /mnt/nvd_data
+          sudo chmod -R 777 /mnt/nvd_data
           sudo mkdir ${{ runner.temp }}/blobfusetmp
 
       - name: Copy config file
