@@ -28,3 +28,7 @@ jobs:
         run: |
           sudo blobfuse2 mount /mnt/nvd_data \
             --tmp-path=${{ runner.temp }}/blobfusetmp \
+            --container-name=${{ secrets.CONTAINER_NAME }}
+      - name: Unmount Azure Blob Storage
+        run: |
+          sudo umount /mnt/nvd_data || echo "Unmount failed"
