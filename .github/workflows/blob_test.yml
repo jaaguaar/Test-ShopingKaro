@@ -24,6 +24,6 @@ jobs:
           STORAGE_ACCOUNT_KEY: ${{ secrets.STORAGE_ACCOUNT_KEY }}
           CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
         run: |
-          blobfuse2 mount ./data
-          cd data
+          blobfuse2 mount ./nvd_data
+          cd nvd_data
           ls -a
