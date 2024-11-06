@@ -85,4 +85,4 @@ jobs:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Unmount Azure Blob Storage
-        run: sudo umount /mnt/nvd_data || echo "Unmount failed"
+        run: sudo umount /home/runner/work/nvd_data || echo "Unmount failed"
