@@ -30,9 +30,6 @@ jobs:
             --format HTML \
             --format JSON \
             --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
-            
-      - name: Run ls
-        run: ls -a
           
       # Set up Docker Buildx for building the image
       - name: Set up Docker Buildx
@@ -60,8 +57,7 @@ jobs:
             docker.io/library/shopingkaro:latest
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
-
-          
+   
       - uses: sonarsource/sonarqube-scan-action@v3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
