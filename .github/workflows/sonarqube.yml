@@ -19,18 +19,12 @@ jobs:
       - name: Install OWASP
         run: |
           VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
-          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
-          unzip dependency-check.zip
-
-      - name: Run ls
-        run: |
-          ls -a
-          cd dependency-check
-          ls -a
+          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output ${{ runner.temp }}/dependency-check.zip
+          unzip ${{ runner.temp }}/dependency-check.zip -d ${{ runner.temp }}
       
       - name: Run OWASP
         run: |
-          ./dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
+          ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
             --out ${{ github.workspace }} \
             --scan "${{ github.workspace }}" \
             --format HTML \
