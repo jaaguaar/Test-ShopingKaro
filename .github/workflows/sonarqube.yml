@@ -47,6 +47,7 @@ jobs:
           ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
             --out ${{ github.workspace }} \
             --scan "${{ github.workspace }}" \
+            --format HTML \
             --format JSON \
             --data /home/runner/work/nvd_data \
             --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
