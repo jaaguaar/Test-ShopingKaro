@@ -18,9 +18,8 @@ jobs:
 
       - name: Create NVD folder
         run: |
-          sudo mkdir /mnt/nvd_data
-          sudo mkdir /home/runner/work/_temp/blobfusetmp
-          sudo chown -R $USER:$USER /mnt/nvd_data /home/runner/work/_temp/blobfusetmp
+          mkdir /home/runner/work/_temp/nvd_data
+          mkdir /home/runner/work/_temp/blobfusetmp
 
       - name: Copy config file
         run: |
@@ -28,13 +27,13 @@ jobs:
           chmod 600 config.yaml
 
       - name: Mount Azure Blob Storage
-        run: sudo blobfuse2 mount /mnt/nvd_data --config-file=config.yaml
+        run: blobfuse2 mount /mnt/nvd_data --config-file=config.yaml
 
       - name: Verify mount
         run: |
           cd /mnt/nvd_data
           ls
-          echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
+          echo "Hello-world" > config-$GITHUB_RUN_NUMBER.yaml
 
       - name: Wait before unmount
         run: sleep 5
