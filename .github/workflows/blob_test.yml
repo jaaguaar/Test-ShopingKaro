@@ -20,6 +20,8 @@ jobs:
         run: |
           mkdir /home/runner/work/_temp/nvd_data
           mkdir /home/runner/work/_temp/blobfusetmp
+          cd /home/runner/work
+          ls
 
       - name: Copy config file
         run: |
