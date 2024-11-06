@@ -18,8 +18,8 @@ jobs:
 
       - name: Create NVD folder
         run: |
-          mkdir /home/runner/work/_temp/nvd_data
-          mkdir /home/runner/work/_temp/blobfusetmp
+          mkdir /home/runner/work/nvd_data
+          mkdir /home/runner/work/blobfusetmp
           cd /home/runner/work
           ls
 
@@ -29,11 +29,11 @@ jobs:
           chmod 600 config.yaml
 
       - name: Mount Azure Blob Storage
-        run: blobfuse2 mount /mnt/nvd_data --config-file=config.yaml
+        run: blobfuse2 mount /home/runner/work/nvd_data --config-file=config.yaml
 
       - name: Verify mount
         run: |
-          cd /mnt/nvd_data
+          cd  /home/runner/work/nvd_data
           ls
           echo "Hello-world" > config-$GITHUB_RUN_NUMBER.yaml
 
