@@ -18,3 +18,12 @@ jobs:
           # sudo dpkg -i packages-microsoft-prod.deb
           # sudo apt-get update
           # sudo apt-get install libfuse3-dev fuse3
+      - name: mount blob
+        env:
+          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          STORAGE_ACCOUNT_KEY: ${{ secrets.STORAGE_ACCOUNT_KEY }}
+          CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+        run: |
+          blobfuse2 mount ./data
+          cd data
+          ls -a
