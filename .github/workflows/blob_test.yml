@@ -31,7 +31,10 @@ jobs:
         run: sudo blobfuse2 mount /mnt/nvd_data --config-file=config.yaml
 
       - name: Verify mount
-        run: sudo ls -la /mnt/nvd_data
+        run: |
+          cd /mnt/nvd_data
+          ls
+          echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
 
       - name: Wait before unmount
         run: sleep 5
