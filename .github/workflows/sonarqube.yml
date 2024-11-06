@@ -57,6 +57,7 @@ jobs:
             docker.io/library/shopingkaro:latest
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+          TRIVY_TIMEOUT: 10m0s
    
       - uses: sonarsource/sonarqube-scan-action@v3
         env:
