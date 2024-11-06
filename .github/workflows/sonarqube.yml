@@ -20,12 +20,11 @@ jobs:
         run: |
           VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
           curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
-          unzip dependency-check.zip -d "${{ runner.temp }}/dependency-check"
+          unzip dependency-check.zip -d dependency-check
       
       - name: Run OWASP
         run: |
-          cd ${{ runner.temp }}/dependency-check/bin
-          ./dependency-check.sh --project "Test-ShopingKaro" \
+          ./dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
             --out ${{ github.workspace }} \
             --scan "${{ github.workspace }}" \
             --format HTML \
