@@ -10,25 +10,32 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-      - name: install blobfuse
+
+      - name: Install BlobFuse
         run: |
           sudo apt update
           sudo apt install blobfuse2 fuse3 libfuse3-dev -y
+
       - name: Create NVD folder
         run: |
           sudo mkdir /mnt/nvd_data
           sudo chown -R $USER:$USER /mnt/nvd_data
           sudo mkdir ${{ runner.temp }}/blobfusetmp
+
+      - name: Copy config file
+        run: |
+          echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
+          chmod 600 config.yaml
+
       - name: Mount Azure Blob Storage
-        env:
-          AZURE_STORAGE_AUTH_TYPE: 'Key'
-          AZURE_STORAGE_ACCOUNT: '${{ secrets.STORAGE_ACCOUNT_NAME }}'
-          AZURE_STORAGE_ACCESS_KEY: '${{ secrets.STORAGE_ACCOUNT_KEY }}'
-          AZURE_STORAGE_ACCOUNT_CONTAINER: '${{ secrets.CONTAINER_NAME }}'
-        run: |
-          sudo blobfuse2 mount /mnt/nvd_data \
-            --tmp-path=${{ runner.temp }}/blobfusetmp \
-            --container-name=${{ secrets.CONTAINER_NAME }}
+        run: sudo blobfuse2 mount /mnt/nvd_data --config-file=config.yaml
+
+      - name: Verify mount
+        run: ls -la /mnt/nvd_data
+
+      - name: Wait before unmount
+        run: sleep 5
+
       - name: Unmount Azure Blob Storage
-        run: |
-          sudo umount /mnt/nvd_data || echo "Unmount failed"
+        run: sudo umount /mnt/nvd_data || echo "Unmount failed"
+
