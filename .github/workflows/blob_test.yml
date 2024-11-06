@@ -19,7 +19,7 @@ jobs:
       - name: Create NVD folder
         run: |
           sudo mkdir /mnt/nvd_data
-          sudo chmod -R 777 /mnt/nvd_data
+          sudo chown -R $USER:$USER /mnt/nvd_data
           sudo mkdir ${{ runner.temp }}/blobfusetmp
 
       - name: Copy config file
@@ -31,7 +31,9 @@ jobs:
         run: sudo blobfuse2 mount /mnt/nvd_data --config-file=config.yaml
 
       - name: Verify mount
-        run: ls -la /mnt/nvd_data
+        run: |
+          sudo chmod -R 777 /mnt/nvd_data
+          ls -la /mnt/nvd_data
 
       - name: Wait before unmount
         run: sleep 5
