@@ -22,6 +22,19 @@ jobs:
           curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output ${{ runner.temp }}/dependency-check.zip
           unzip ${{ runner.temp }}/dependency-check.zip -d ${{ runner.temp }}
       
+      - name: Install BlobFuse
+        run: |
+          sudo apt update
+          sudo apt install blobfuse2 fuse3 libfuse3-dev -y
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
+          trivy --version
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+   
       - name: Run OWASP
         run: |
           ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
@@ -29,22 +42,14 @@ jobs:
             --scan "${{ github.workspace }}" \
             --format HTML \
             --format JSON \
+            --data /home/runner/work/nvd_data \
             --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
-          
-      # Set up Docker Buildx for building the image
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
 
       # Build the Docker image without pushing
       - name: Build Docker Image
         run: |
           docker build -t shopingkaro:latest .
 
-      - name: Install Trivy
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
-          trivy --version
-          
       - name: Run Trivy Vulnerability Scanner
         run: |
           trivy image \
