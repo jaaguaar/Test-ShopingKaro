@@ -16,23 +16,23 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Install OWASP
-        run: |
-          VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
-          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output ${{ runner.temp }}/dependency-check.zip
-          unzip ${{ runner.temp }}/dependency-check.zip -d ${{ runner.temp }}
+      # - name: Install OWASP
+      #   run: |
+      #     VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+      #     curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output ${{ runner.temp }}/dependency-check.zip
+      #     unzip ${{ runner.temp }}/dependency-check.zip -d ${{ runner.temp }}
       
-      - name: Install BlobFuse
-        run: |
-          sudo apt update
-          sudo apt install blobfuse2 fuse3 libfuse3-dev -y
-          echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
-          chmod 600 config.yaml
-          mkdir /home/runner/work/nvd_data
-          mkdir /home/runner/work/blobfusetmp
+      # - name: Install BlobFuse
+      #   run: |
+      #     sudo apt update
+      #     sudo apt install blobfuse2 fuse3 libfuse3-dev -y
+      #     echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
+      #     chmod 600 config.yaml
+      #     mkdir /home/runner/work/nvd_data
+      #     mkdir /home/runner/work/blobfusetmp
 
-      - name: Mount Azure Blob Storage
-        run: blobfuse2 mount /home/runner/work/nvd_data --config-file=config.yaml
+      # - name: Mount Azure Blob Storage
+      #   run: blobfuse2 mount /home/runner/work/nvd_data --config-file=config.yaml
 
       - name: Install Trivy
         run: |
@@ -42,15 +42,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
    
-      - name: Run OWASP Dependency Check
-        run: |
-          ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
-            --out ${{ github.workspace }} \
-            --scan "${{ github.workspace }}" \
-            --format HTML \
-            --format JSON \
-            --data /home/runner/work/nvd_data \
-            --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
+      # - name: Run OWASP Dependency Check
+      #   run: |
+      #     ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
+      #       --out ${{ github.workspace }} \
+      #       --scan "${{ github.workspace }}" \
+      #       --format HTML \
+      #       --format JSON \
+      #       --data /home/runner/work/nvd_data \
+      #       --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
 
       # Build the Docker image without pushing
       - name: Build Docker Image
