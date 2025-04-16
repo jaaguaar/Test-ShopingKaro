@@ -28,7 +28,7 @@ jobs:
           sudo apt install blobfuse2 fuse3 libfuse3-dev -y
           echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
           chmod 600 config.yaml
-          cat config.yam
+          cat config.yaml
           mkdir /home/runner/work/nvd_data
           mkdir /home/runner/work/blobfusetmp
 
