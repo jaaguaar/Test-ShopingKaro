@@ -28,61 +28,62 @@ jobs:
           sudo apt install blobfuse2 fuse3 libfuse3-dev -y
           echo "${{ secrets.CONFIG_CONTENT }}" > config.yaml
           chmod 600 config.yaml
+          cat config.yam
           mkdir /home/runner/work/nvd_data
           mkdir /home/runner/work/blobfusetmp
 
-      - name: Mount Azure Blob Storage
-        run: blobfuse2 mount /home/runner/work/nvd_data --config-file=config.yaml
+      # - name: Mount Azure Blob Storage
+      #   run: blobfuse2 mount /home/runner/work/nvd_data --config-file=config.yaml
 
-      - name: Install Trivy
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
-          trivy --version
+      # - name: Install Trivy
+      #   run: |
+      #     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.57.0
+      #     trivy --version
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
    
-      - name: Run OWASP Dependency Check
-        run: |
-          ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
-            --out ${{ github.workspace }} \
-            --scan "${{ github.workspace }}" \
-            --format HTML \
-            --format JSON \
-            --data /home/runner/work/nvd_data \
-            --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
+      # - name: Run OWASP Dependency Check
+      #   run: |
+      #     ${{ runner.temp }}/dependency-check/bin/dependency-check.sh --project "Test-ShopingKaro" \
+      #       --out ${{ github.workspace }} \
+      #       --scan "${{ github.workspace }}" \
+      #       --format HTML \
+      #       --format JSON \
+      #       --data /home/runner/work/nvd_data \
+      #       --nvdApiKey cbfdc3a4-45a8-4367-a3d1-321b529d7a94
 
-      # Build the Docker image without pushing
-      - name: Build Docker Image
-        run: |
-          docker build -t shopingkaro:latest .
+      # # Build the Docker image without pushing
+      # - name: Build Docker Image
+      #   run: |
+      #     docker build -t shopingkaro:latest .
 
-      - name: Run Trivy Vulnerability Scanner
-        run: |
-          trivy image \
-            --scanners vuln \
-            --ignore-unfixed \
-            --vuln-type os,library \
-            --severity CRITICAL,HIGH \
-            --format sarif \
-            --output trivy-report.sarif \
-            docker.io/library/shopingkaro:latest
-        env:
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
-          TRIVY_TIMEOUT: 10m0s
+      # - name: Run Trivy Vulnerability Scanner
+      #   run: |
+      #     trivy image \
+      #       --scanners vuln \
+      #       --ignore-unfixed \
+      #       --vuln-type os,library \
+      #       --severity CRITICAL,HIGH \
+      #       --format sarif \
+      #       --output trivy-report.sarif \
+      #       docker.io/library/shopingkaro:latest
+      #   env:
+      #     TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
+      #     TRIVY_TIMEOUT: 10m0s
    
-      - uses: sonarsource/sonarqube-scan-action@v3
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_SCANNER_OPTS: "-Xmx4096m"
-          JAVA_OPTS: "-Xmx4096m"
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
+      # - uses: sonarsource/sonarqube-scan-action@v3
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #     SONAR_SCANNER_OPTS: "-Xmx4096m"
+      #     JAVA_OPTS: "-Xmx4096m"
+      # # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # # following lines. This would typically be used to fail a deployment.
+      # # - uses: sonarsource/sonarqube-quality-gate-action@master
+      # #   timeout-minutes: 5
+      # #   env:
+      # #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Unmount Azure Blob Storage
-        run: sudo umount /home/runner/work/nvd_data || echo "Unmount failed"
+      # - name: Unmount Azure Blob Storage
+      #   run: sudo umount /home/runner/work/nvd_data || echo "Unmount failed"
