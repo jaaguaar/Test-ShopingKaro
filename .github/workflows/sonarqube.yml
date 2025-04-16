@@ -13,14 +13,14 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Install Dependencies
-        run: npm install
+      # - name: Install Dependencies
+      #   run: npm install
 
-      - name: Install OWASP
-        run: |
-          VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
-          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output ${{ runner.temp }}/dependency-check.zip
-          unzip ${{ runner.temp }}/dependency-check.zip -d ${{ runner.temp }}
+      # - name: Install OWASP
+      #   run: |
+      #     VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+      #     curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output ${{ runner.temp }}/dependency-check.zip
+      #     unzip ${{ runner.temp }}/dependency-check.zip -d ${{ runner.temp }}
       
       - name: Install BlobFuse
         run: |
